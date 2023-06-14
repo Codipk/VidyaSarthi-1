@@ -9,10 +9,12 @@ const tagSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  courses: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
-  }
+  course: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+    }
+  ]
 
 });
 

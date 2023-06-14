@@ -1,0 +1,2 @@
+-> Tags can be only created by Admins.
+-> before creation of course tag must be available
