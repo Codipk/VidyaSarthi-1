@@ -112,7 +112,7 @@ exports.signUp = async (req, res) => {
         message: 'OTP is not Found ',
       });
     }
-    else if (otp != recentOtp.otp) {
+    else if (otp != recentOtp[0].otp) {
       return res.status(400).json({
         success: false,
         message: 'Invalid OTPss',
@@ -179,7 +179,7 @@ exports.login = async (req, res) => {
     if (!email || !password) {
       return res.status(403).json({
         success: false,
-        message: 'All fieds are neccessary',
+        message: 'All fields are neccessary',
       });
     }
 
