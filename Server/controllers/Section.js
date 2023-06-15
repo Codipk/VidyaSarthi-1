@@ -45,9 +45,9 @@ exports.createSection = async (req, res) => {
     console.log("Error in creating section : ", error);
     return res.status(500).json({
       success: false,
-      message: 'Cannot Create Section , please try again',
+      message: 'Cannot Create a Section , please try again',
       error: error.message,
-    })
+    });
   }
 }
 
@@ -55,8 +55,43 @@ exports.createSection = async (req, res) => {
 exports.updateSection = async (req, res) => {
   try {
 
-  } catch (error) {
+    //data input
+    //data validation
+    //update data
+    //return response
 
+    //data input
+    const { sectionName, sectionId } = req.body;
+
+    //data validation
+    if (!sectionName || !sectionId) {
+      return res.status(400).json({
+        success: true,
+        message: 'All fields are required',
+      });
+    }
+    //update data
+    const section = await Section.findByIdAndUpdate({ sectionId },
+      {
+        sectionName,
+      },
+      { new: true },
+    )
+    //return response
+    return res.status(200).json({
+      success: true,
+      message: 'Section Updated Successfully',
+      section,
+    });
+
+
+  } catch (error) {
+    console.log("Error in updating section : ", error);
+    return res.status(500).json({
+      success: false,
+      message: 'Cannot Update a Section , please try again',
+      error: error.message,
+    });
   }
 }
 
@@ -65,8 +100,25 @@ exports.updateSection = async (req, res) => {
 //deleteSection
 exports.deleteSection = async (req, res) => {
   try {
+    //get ID -> assuming we are sending ID in parameteres
+    const { sectionId } = req.params;
+    //use findByIdAndDelete function to delete
+    await Section.findByIdAndDelete(sectionId);
+    //TODO->Do we need to delete this entry from course schema??
+    //return response
+    return res.status(200).json({
+      success: true,
+      message: 'Section Deleted Successfully',
+
+    });
+
 
   } catch (error) {
-
+    console.log("Error in deleting section : ", error);
+    return res.status(500).json({
+      success: false,
+      message: 'Cannot Delete a Section , please try again',
+      error: error.message,
+    });
   }
 }
