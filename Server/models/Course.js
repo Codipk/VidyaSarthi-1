@@ -16,7 +16,7 @@ const courseSchema = new mongoose.Schema({
   whatYouWillLearn: {
     type: String,
   },
-  courseContent: [
+  courseContent: [//SECTION
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Section",
@@ -34,9 +34,12 @@ const courseSchema = new mongoose.Schema({
   thumbnail: {
     type: String,
   },
-  tag: {
+  category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Tag",
+    ref: "Category",
+  },
+  tag: {
+    type: String,
   },
   studentEnrolled: [
     {
@@ -44,7 +47,8 @@ const courseSchema = new mongoose.Schema({
       ref: "User",
       required: true,
     }
-  ]
+  ],
+
 });
 
 module.exports = mongoose.model("Course", courseSchema);
