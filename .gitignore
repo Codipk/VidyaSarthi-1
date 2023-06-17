@@ -133,4 +133,5 @@ dist
 #personalFiles
 vidyaSarthiWeb.pdf
 *.pdf
+.DS_Store
 *.txt
