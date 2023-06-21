@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Course = require('../models/Course');
 const { instance } = require('../config/razorpay');
-const courseEnrollmentEmail = require('../mail/templates/courseEnrollmentEmail');
+const { courseEnrollmentEmail } = require('../mail/templates/courseEnrollmentEmail');
 const mailSender = require('../utils/mailSender');
 const { default: mongoose } = require('mongoose');
 
@@ -59,7 +59,7 @@ exports.capturePayment = async (req, res) => {
     //create order
     const amount = course.price;
     const currency = "INR";
-    const option = {
+    const options = {
         amount: amount * 100,
         currency,
         receipt: Math.random(Date.now()).toString(),
@@ -82,6 +82,7 @@ exports.capturePayment = async (req, res) => {
             amount: paymentResponse.amount,
         });
     } catch (error) {
+        console.log(error);
         return res.json({
             success: false,
             message: 'Could not initiate the order'
@@ -145,14 +146,14 @@ exports.verifySignature = async (req, res) => { // this request is not from fron
         } catch (error) {
             console.log(error);
             return res.status(500).json({
-                success: true,
+                success: false,
                 message: error.message,
             });
         }
     }
     else {
         return res.status(400).json({
-            success: true,
+            success: false,
             message: 'Invalid request',
         });
     }

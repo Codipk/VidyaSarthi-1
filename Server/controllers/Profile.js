@@ -1,10 +1,9 @@
-const Profile = require('../models/Profile');
-const User = require('../models/User');
-//TODO -> how can we schedule or request -> is there any method to schedule it 
-
-// req.user = decode; this was inserted in auth.js middleware
+const Profile = require("../models/Profile");
+const User = require("../models/User");
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
+require('dotenv').config();
+// Method for updating a profile
 exports.updateProfile = async (req, res) => {
-
   try {
     //getRequired Data
     //get userId
@@ -12,120 +11,143 @@ exports.updateProfile = async (req, res) => {
     //find profile
     //update profile
     //return response
-
-    //getRequired Data
-
-    const { gender, dateOfBirth = "", about = "", contactNumber } = req.body;
-    //get userId
+    const { about = "", contactNumber, dateOfBirth = "", } = req.body;
     const id = req.user.id;
-    //validation
-    if (!contactNumber || !gender || !id) {
-      return res.status(400).json({
-        success: false,
-        message: 'All Fields are mandatory.',
-      });
-    }
-    //find profile
+
+    // Find the profile by id
     const userDetails = await User.findById(id);
-    const profileId = userDetails.additonalDetails;
-    const profileDetails = await Profile.findById(profileId);
-    //NOTE: you can use findByIdAndUpdate but we have two method to create a entry in databae
-    //first one is by create method another one is by save method
+    const profile = await Profile.findById(userDetails.additionalDetails);
 
-    //update profile
-    profileDetails.gender = gender;
-    profileDetails.dateOfBirth = dateOfBirth;
-    profileDetails.about = about;
-    profileDetails.contactNumber = contactNumber;
-    await profileDetails.save();
-    //return response
-    return res.status(200).json({
+    // Update the profile fields
+    profile.dateOfBirth = dateOfBirth;
+    profile.about = about;
+    profile.contactNumber = contactNumber;
+
+    // Save the updated profile
+    await profile.save();
+
+    return res.json({
       success: true,
-      message: 'Profile Details updated Successfully',
-      profileDetails,
-
+      message: "Profile updated successfully",
+      profile,
     });
-
   } catch (error) {
-    return res.status(500).json({
-      success: true,
-      message: 'Internal Server Error in Updating Profile',
-      error: error.message,
-    });
-
-  }
-
-}
-
-
-//deleteAccount
-exports.deleteAccount = async (req, res) => {
-  try {
-
-    //get id
-    const id = req.user.id;
-    //check for valid id
-    const userDetails = await User.findById(id);
-    if (!userDetails) {
-      return res.status(404).json({
-        success: false,
-        message: 'User Not Found',
-      });
-    }
-    //scope of Modification -> request a schedulung a task or request
-    //crone job
-    //delete Profile
-    await Profile.findByIdAndDelete({ _id: userDetails.additonalDetails });
-    //delete user
-    await user.findByIdAndDelete(id);
-
-    //TODO -> unenoroll users from enrolled  courses
-
-    ///return respose
-    return res.status(200).json({
-      success: true,
-      message: 'User deleted Successfully',
-    });
-
-
-  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
-      message: 'Internal Server Error in Deleting Account',
       error: error.message,
     });
   }
-}
+};
+
+exports.deleteAccount = async (req, res) => {
+  try {
+    // TODO: Find More on Job Schedule
+    // const job = schedule.scheduleJob("10 * * * * *", function () {
+    // 	console.log("The answer to life, the universe, and everything!");
+    // });
+    // console.log(job);
+    const id = req.user.id;
+    const user = await User.findById({ _id: id });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    // Delete Assosiated Profile with the User
+    await Profile.findByIdAndDelete({ _id: user.userDetails });
+    // TODO: Unenroll User From All the Enrolled Courses
+    // Now Delete User
+    await user.findByIdAndDelete({ _id: id });
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "User Cannot be deleted successfully" });
+  }
+};
 
 exports.getAllUserDetails = async (req, res) => {
   try {
-    //get id
-    //getuserDetails and validation
-    //return res
-
-    //get id
     const id = req.user.id;
-
-    //validation
-    const userDetails = await User.findById(id).populate("additionalDetails").exec();
-    if (!id) {
-      return res.status(404).json({
-        success: false,
-        message: "User Not Found",
-      });
-    }
-    //return all details 
-    return res.status(200).json({
+    const userDetails = await User.findById(id)
+      .populate("additionalDetails")
+      .exec();
+    console.log(userDetails);
+    res.status(200).json({
       success: true,
-      message: 'User Data Fetched Successfully',
-
-    })
-
+      message: "User Data fetched successfully",
+      data: userDetails,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Internal Server Error in Fetching Details ',
-      error: error.message,
+      message: error.message,
     });
   }
-}
+};
+
+//updateDisplayPicture
+
+exports.updateDisplayPicture = async (req, res) => {
+  try {
+    const displayPicture = req.files.displayPicture
+    const userId = req.user.id
+    console.log("block1")
+    const image = await uploadImageToCloudinary(
+      displayPicture,
+      process.env.FOLDER_NAME,
+      1000,
+      1000
+    );
+    console.log("block2")
+    console.log(image)
+    const updatedProfile = await User.findByIdAndUpdate(
+      { _id: userId },
+      { image: image.secure_url },
+      { new: true }
+    )
+    res.send({
+      success: true,
+      message: `Image Updated successfully`,
+      data: updatedProfile,
+    })
+  } catch (error) {
+    console.log("Error in uploading profile Pic")
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+};
+
+exports.getEnrolledCourses = async (req, res) => {
+  try {
+    const userId = req.user.id
+    const userDetails = await User.findOne({
+      _id: userId,
+    })
+      .populate("courses")
+      .exec()
+    if (!userDetails) {
+      return res.status(400).json({
+        success: false,
+        message: `Could not find user with id: ${userDetails}`,
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      data: userDetails.courses,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+};
