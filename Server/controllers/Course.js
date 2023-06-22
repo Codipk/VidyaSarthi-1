@@ -178,7 +178,7 @@ exports.getCourseDetails = async (req, res) => {
         },
       })
       .exec();
-
+    console.log(courseDetails);
     //validation
     if (!courseDetails) {
       return res.status(400).json({
@@ -201,4 +201,6 @@ exports.getCourseDetails = async (req, res) => {
       message: error.message,
     });
   }
-} 
+}
+
+//delete a course

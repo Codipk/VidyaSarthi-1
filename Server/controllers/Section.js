@@ -1,5 +1,6 @@
 const Section = require('../models/Section');
 const Course = require('../models/Course');
+const { default: mongoose } = require('mongoose');
 
 
 //******************************************createSection*****************************************************\
@@ -68,7 +69,7 @@ exports.updateSection = async (req, res) => {
     //return response
 
     //data input
-    const { sectionName, sectionId } = req.body;
+    let { sectionName, sectionId } = req.body;
 
     //data validation
     // if (!sectionName || !sectionId) {
@@ -77,8 +78,11 @@ exports.updateSection = async (req, res) => {
     //     message: 'All fields are required',
     //   });
     // }
+    sectionId = new mongoose.Types.ObjectId(sectionId);
+    console.log("SectionID : ", sectionId);
+    console.log("\nType of Section id : ", typeof (sectionId));
     //update data
-    const section = await Section.findByIdAndUpdate({ sectionId },
+    const section = await Section.findByIdAndUpdate({ _id: sectionId },
       {
         sectionName,
       },
@@ -108,12 +112,15 @@ exports.updateSection = async (req, res) => {
 exports.deleteSection = async (req, res) => {
   try {
     //get ID -> assuming we are sending ID in parameteres
-    const { sectionId } = req.params;
+    const { sectionId } = req.body;
+    console.log("\nSection Id : ", sectionId);
     //use findByIdAndDelete function to delete
-    await Section.findByIdAndDelete(sectionId);
+    await Section.findByIdAndDelete({ _id: new mongoose.Types.ObjectId(sectionId) });
+
     //TODO->Do we need to delete this entry from course schema??
     //NO it autodelted but why?
     //return response
+    console.log("\nSection Id : ", sectionId);
     return res.status(200).json({
       success: true,
       message: 'Section Deleted Successfully',

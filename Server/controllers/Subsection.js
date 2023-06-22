@@ -68,13 +68,13 @@ exports.updateSubSection = async (req, res) => {
     if (title !== undefined) {
       subSection.title = title
     }
-
+    let uploadDetails;
     if (description !== undefined) {
       subSection.description = description
     }
     if (req.files && req.files.video !== undefined) {
       const video = req.files.video
-      const uploadDetails = await uploadImageToCloudinary(
+      uploadDetails = await uploadImageToCloudinary(
         video,
         process.env.FOLDER_NAME
       )
@@ -87,6 +87,7 @@ exports.updateSubSection = async (req, res) => {
     return res.json({
       success: true,
       message: "Section updated successfully",
+      uploadDetails,
     })
   } catch (error) {
     console.error(error)
