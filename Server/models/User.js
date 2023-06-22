@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    additonalDetails: {
+    additionalDetails: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "Profile"

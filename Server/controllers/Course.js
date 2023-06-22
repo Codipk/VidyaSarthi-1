@@ -130,7 +130,7 @@ exports.getAllCourses = async (req, res) => {
         thumbnail: true,
         instructor: true,
         ratingAndReviews: true,
-        studentsEnroled: true,
+        studentEnrolled: true,
       }
     )
       .populate("instructor")
@@ -148,8 +148,6 @@ exports.getAllCourses = async (req, res) => {
     });
   }
 };
-
-//getCourseDetails
 
 
 
@@ -172,7 +170,7 @@ exports.getCourseDetails = async (req, res) => {
         }
       )
       .populate("category")
-      .populate("ratingAndreviews")
+      .populate("ratingAndReviews")
       .populate({
         path: "courseContent",
         populate: {

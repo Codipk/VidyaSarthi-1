@@ -2,6 +2,7 @@ const Profile = require("../models/Profile");
 const User = require("../models/User");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 require('dotenv').config();
+const mongoose = require('mongoose');
 // Method for updating a profile
 exports.updateProfile = async (req, res) => {
   try {
@@ -11,17 +12,24 @@ exports.updateProfile = async (req, res) => {
     //find profile
     //update profile
     //return response
-    const { about = "", contactNumber, dateOfBirth = "", } = req.body;
+    const { about = "", contactNumber, dateOfBirth = "", gender = "" } = req.body;
     const id = req.user.id;
 
     // Find the profile by id
     const userDetails = await User.findById(id);
-    const profile = await Profile.findById(userDetails.additionalDetails);
+    console.log("userDetails : ", userDetails);
+    const profileId = userDetails.additonalDetails;
+    //do chije sikhi
+    //1-> objectId to string -> obectId.value();
+    //2-> string to objectId new mongoose.objectId('string')
+    const profile = await Profile.findById(profileId);
 
+    console.log("Profile", profile);//yahi null aa ja rha h
     // Update the profile fields
     profile.dateOfBirth = dateOfBirth;
     profile.about = about;
     profile.contactNumber = contactNumber;
+    profile.gender = gender;
 
     // Save the updated profile
     await profile.save();
@@ -47,19 +55,24 @@ exports.deleteAccount = async (req, res) => {
     // 	console.log("The answer to life, the universe, and everything!");
     // });
     // console.log(job);
-    const id = req.user.id;
+    const id = new mongoose.Types.ObjectId(req.user.id);
+    console.log("UserID is :", id);
+    console.log("\nType of userID", typeof (id));
     const user = await User.findById({ _id: id });
     if (!user) {
+      console.log("User Not Found");
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
+    console.log("User Details \n", user);
+    console.log("UserAdditional Details", user.additionalDetails);
     // Delete Assosiated Profile with the User
-    await Profile.findByIdAndDelete({ _id: user.userDetails });
+    await Profile.findByIdAndDelete({ _id: user.additionalDetails });
     // TODO: Unenroll User From All the Enrolled Courses
     // Now Delete User
-    await user.findByIdAndDelete({ _id: id });
+    await User.findByIdAndDelete({ _id: id });
     res.status(200).json({
       success: true,
       message: "User deleted successfully",
@@ -93,7 +106,7 @@ exports.getAllUserDetails = async (req, res) => {
 };
 
 //updateDisplayPicture
-
+//NOT WORKING PROPERLY
 exports.updateDisplayPicture = async (req, res) => {
   try {
     const displayPicture = req.files.displayPicture

@@ -1,4 +1,5 @@
 const Category = require('../models/Category');
+const { findByIdAndUpdate } = require('../models/User');
 
 //handler of createCategory API
 
@@ -13,12 +14,14 @@ exports.createCategory = async (req, res) => {
         message: 'All fields are Reuired',
       });
     }
+
     //create entry in DB
     const categoryDetails = await Category.create({
       name: name,
       description: description,
     });
     console.log("CategoryDetails : ", categoryDetails);
+
     //return response
     return res.status(200).json({
       success: true,
@@ -66,7 +69,7 @@ exports.categoryPageDetails = async (req, res) => {
 
     // Get courses for the specified category
     const selectedCategory = await Category.findById(categoryId)
-      .populate("courses")
+      .populate("course")
       .exec();
     console.log(selectedCategory);
     // Handle the case when the category is not found
@@ -77,7 +80,8 @@ exports.categoryPageDetails = async (req, res) => {
         .json({ success: false, message: "Category not found" });
     }
     // Handle the case when there are no courses
-    if (selectedCategory.courses.length === 0) {
+    //console.log("length : ", selectedCategory.course.length);
+    if (selectedCategory.course.length === 0) {
       console.log("No courses found for the selected category.");
       return res.status(404).json({
         success: false,
@@ -85,18 +89,18 @@ exports.categoryPageDetails = async (req, res) => {
       });
     }
 
-    const selectedCourses = selectedCategory.courses;
+    const selectedCourses = selectedCategory.course;
 
     // Get courses for other categories
     const categoriesExceptSelected = await Category.find({
       _id: { $ne: categoryId },
-    }).populate("courses");
+    }).populate("course");
 
     //get coursesfor different categories
     const differentCategories = await Category.find({
       _id: { $ne: categoryId },//ne -> not equal
     })
-      .populate("courses")
+      .populate("course")
       .exec();
 
 

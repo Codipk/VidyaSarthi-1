@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const mailSender = require('../utils/mailSender');
 const bcrypt = require("bcrypt");
+const crypto = require('crypto');
 require('dotenv').config();
 
 
@@ -40,7 +41,7 @@ exports.resetPasswordToken = async (req, res) => {
 
     // we are running our frontend on port 3000 so we use 3000 in url
     const frontendPort = process.env.FRONTEND_PORT;
-    console.log("DETAILS", updatedDetails);
+    console.log("DETAILS", updateDetails);
     //create url
     const url = `http://localhost:${frontendPort}/update-password/${token}`;
 
@@ -48,13 +49,14 @@ exports.resetPasswordToken = async (req, res) => {
     await mailSender(
       email,
       "Password Reset",
-      `Your Link for email verification is ${url}. Please click this url to reset your password.`
+      `Your Link for email verification is ${url}. Please click this url to reset your password.`,
     );
 
     //return response
     return res.status(200).json({
       success: true,
       message: 'Email sent successfully . Please check Email and Change password',
+      token,
     });
 
   } catch (error) {
@@ -70,7 +72,9 @@ exports.resetPasswordToken = async (req, res) => {
 }
 
 
-//resetPassword
+//resetPassword 
+//TODO ->need of more logic ek hi token se 2 bar paassword change kr dia...
+//isko only once krna pdega
 exports.resetPassword = async (req, res) => {
   try {
     //fetch data
