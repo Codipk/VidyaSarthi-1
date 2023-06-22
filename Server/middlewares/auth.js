@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 
 //auth
-exports.auth = async (req, res) => {
+exports.auth = async (req, res, next) => {
   try {
     //extract token
     const token = req.cookies.token || req.body.token

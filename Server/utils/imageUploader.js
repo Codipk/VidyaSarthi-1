@@ -12,6 +12,8 @@ exports.uploadImageToCloudinary = async (file, folder, height, quality) => {
     options.quality = quality;
   }
   options.resource_type = "auto";
+  //console.log(`Image Uploaded Successfully in ${folder}`);
+  console.log("TempFilePath: ", file.tempFilePath);
   return await cloudinary.uploader.upload(file.tempFilePath, options);
 
 }

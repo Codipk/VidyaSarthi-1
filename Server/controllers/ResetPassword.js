@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const mailSender = require('../utils/mailSender');
+const bcrypt = require("bcrypt");
+const crypto = require('crypto');
 require('dotenv').config();
 
 
@@ -27,8 +29,9 @@ exports.resetPasswordToken = async (req, res) => {
     }
     //generate token -> this token will be inserted in DB and then using this token
     //we will get the user and then reset the password 
-    const token = crypto.randomUUID();//for example "36b8f84d-df4e-4d49-b662-bcde71a8764f"
-    const updateDetails = await User.findOneAndUpdate({ email: email },
+    const token = crypto.randomBytes(20).toString("hex");//for example "36b8f84d-df4e-4d49-b662-bcde71a8764f"
+    const updateDetails = await User.findOneAndUpdate(
+      { email: email },
       {
         token: token,
         resetPasswordExpires: Date.now() + 5 * 60 * 1000, //5 min
@@ -38,16 +41,22 @@ exports.resetPasswordToken = async (req, res) => {
 
     // we are running our frontend on port 3000 so we use 3000 in url
     const frontendPort = process.env.FRONTEND_PORT;
+    console.log("DETAILS", updateDetails);
     //create url
     const url = `http://localhost:${frontendPort}/update-password/${token}`;
 
     //send mail containing url
-    await mailSender(email, "Password Reset Link ", `Password Reset Link : ${url}`);
+    await mailSender(
+      email,
+      "Password Reset",
+      `Your Link for email verification is ${url}. Please click this url to reset your password.`,
+    );
 
     //return response
     return res.status(200).json({
       success: true,
       message: 'Email sent successfully . Please check Email and Change password',
+      token,
     });
 
   } catch (error) {
@@ -55,6 +64,7 @@ exports.resetPasswordToken = async (req, res) => {
     console.log("Error in ResetPassword Token : ", error);
     return res.status(500).json({
       success: false,
+      error: error.message,
       message: 'Something went Wrong in ResetPasswordToken'
     });
   }
@@ -62,9 +72,9 @@ exports.resetPasswordToken = async (req, res) => {
 }
 
 
-
-
-//resetPassword
+//resetPassword 
+//TODO ->need of more logic ek hi token se 2 bar paassword change kr dia...
+//isko only once krna pdega
 exports.resetPassword = async (req, res) => {
   try {
     //fetch data
@@ -102,30 +112,22 @@ exports.resetPassword = async (req, res) => {
       });
     }
     //hash password
-    let hashedPassword;
-    try {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-    catch (err) {
-      return res.status(500).json({
-        success: false,
-        message: 'Error inn hashing Password during reset time',
-      });
-    }
+    const encryptedPassword = await bcrypt.hash(password, 10);
     //password update
-    await User.findOneAndUpdate({ token: token },
-      { password: hashedPassword, },
+    await User.findOneAndUpdate(
+      { token: token },
+      { password: encryptedPassword, },
       { new: true });//with this new:true -> updated data is returned
 
     //return response
     return res.status(200).json({
       success: true,
       message: 'Password reset Successfully',
-    })
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error in reset password'
-    })
+      message: `Some Error in Updating the Password`,
+    });
   }
-}
+};

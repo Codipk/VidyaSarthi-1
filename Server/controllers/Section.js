@@ -16,15 +16,15 @@ exports.createSection = async (req, res) => {
     //data validate
     if (!sectionName || !courseId) {
       return res.status(400).json({
-        success: true,
-        message: 'All fields are required',
+        success: false,
+        message: 'Mising Required Properties',
       });
     }
 
     //create section
     const newSection = await Section.create({ sectionName });
     //update course with section objectID
-    const updatedCourseDetails = await Course.findByIdAndUpdate(
+    const updatedCourse = await Course.findByIdAndUpdate(
       courseId,
       {
         $push: {
@@ -32,20 +32,27 @@ exports.createSection = async (req, res) => {
         }
       },
       { new: true }, //this will lead to return updated Course
-    );
-    //Hw-> use populate to replace section/sub-section both in updatedcourseDetails
+    )//TODO-> use populate to replace section/sub-section both in updatedcourseDetails
+      .populate({
+        path: "courseContent",
+        populate: {
+          path: "subSection",
+        },
+      })
+      .exec();
+
     //return response
     return res.status(200).json({
       success: true,
-      message: 'Section Added Successfully',
-      updatedCourseDetails,
+      message: 'Section Created Successfully',
+      updatedCourse,
     });
 
   } catch (error) {
     console.log("Error in creating section : ", error);
     return res.status(500).json({
       success: false,
-      message: 'Cannot Create a Section , please try again',
+      message: 'Internal Server Error. Cannot Create a Section , please try again',
       error: error.message,
     });
   }
@@ -64,12 +71,12 @@ exports.updateSection = async (req, res) => {
     const { sectionName, sectionId } = req.body;
 
     //data validation
-    if (!sectionName || !sectionId) {
-      return res.status(400).json({
-        success: true,
-        message: 'All fields are required',
-      });
-    }
+    // if (!sectionName || !sectionId) {
+    //   return res.status(400).json({
+    //     success: true,
+    //     message: 'All fields are required',
+    //   });
+    // }
     //update data
     const section = await Section.findByIdAndUpdate({ sectionId },
       {
@@ -89,7 +96,7 @@ exports.updateSection = async (req, res) => {
     console.log("Error in updating section : ", error);
     return res.status(500).json({
       success: false,
-      message: 'Cannot Update a Section , please try again',
+      message: 'Internal Server Error. Cannot Update a Section , please try again',
       error: error.message,
     });
   }
@@ -105,6 +112,7 @@ exports.deleteSection = async (req, res) => {
     //use findByIdAndDelete function to delete
     await Section.findByIdAndDelete(sectionId);
     //TODO->Do we need to delete this entry from course schema??
+    //NO it autodelted but why?
     //return response
     return res.status(200).json({
       success: true,
@@ -117,8 +125,8 @@ exports.deleteSection = async (req, res) => {
     console.log("Error in deleting section : ", error);
     return res.status(500).json({
       success: false,
-      message: 'Cannot Delete a Section , please try again',
+      message: 'Internal Server Error. Cannot Delete a Section , please try again',
       error: error.message,
     });
   }
-}
+};
