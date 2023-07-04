@@ -7,7 +7,7 @@ Chart.register(...registerables);
 
 const InstructorChart = ({ courses }) => {
   const [currChart, setCurrChart] = useState("students");
-
+  console.log("Course : ", courses);
   //functio to genertae random colors
   const getRandomColors = (numColors) => {
     const colors = [];
@@ -15,7 +15,7 @@ const InstructorChart = ({ courses }) => {
       const color = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
         Math.random() * 256
       )},
-            ${Math.floor(Math.random() * 256)})`;
+      ${Math.floor(Math.random() * 256)})`;
       colors.push(color);
     }
     return colors;
@@ -24,22 +24,22 @@ const InstructorChart = ({ courses }) => {
   //create data for chart displaying student info
 
   const chartDataForStudents = {
-    labels: courses.map((course) => course.courseName),
+    labels: courses?.map((course) => course?.courseName),
     datasets: [
       {
-        data: courses.map((course) => course.totalStudentsEnrolled),
-        backgroundColor: getRandomColors(courses.length),
+        data: courses?.map((course) => course?.totalStudentsEnrolled),
+        backgroundColor: getRandomColors(courses?.length),
       },
     ],
   };
 
   //create data for chart displaying iincome info
   const chartDataForIncome = {
-    labels: courses.map((course) => course.courseName),
+    labels: courses?.map((course) => course?.courseName),
     datasets: [
       {
-        data: courses.map((course) => course.totalAmountGenerated),
-        backgroundColor: getRandomColors(courses.length),
+        data: courses?.map((course) => course?.totalAmountGenerated),
+        backgroundColor: getRandomColors(courses?.length),
       },
     ],
   };
@@ -52,7 +52,6 @@ const InstructorChart = ({ courses }) => {
       <p>Visualise</p>
       <div className="flex gap-x-5">
         <button onClick={() => setCurrChart("students")}>Student</button>
-
         <button onClick={() => setCurrChart("income")}>Income</button>
       </div>
       <div>

@@ -58,7 +58,7 @@ const VideoDetails = () => {
 
     const currentSubSectionIndex = courseSectionData[
       currentSectionIndex
-    ].subSectionId.findIndex((data) => data._id === subSectionId);
+    ].subSection.findIndex((data) => data._id === subSectionId);
     if (currentSectionIndex === 0 && currentSubSectionIndex === 0) {
       return true;
     } else {
@@ -76,7 +76,7 @@ const VideoDetails = () => {
 
     const currentSubSectionIndex = courseSectionData[
       currentSectionIndex
-    ].subSectionId.findIndex((data) => data._id === subSectionId);
+    ].subSection.findIndex((data) => data._id === subSectionId);
 
     if (
       currentSectionIndex === courseSectionData.length - 1 &&
@@ -98,7 +98,7 @@ const VideoDetails = () => {
 
     const currentSubSectionIndex = courseSectionData[
       currentSectionIndex
-    ].subSectionId.findIndex((data) => data._id === subSectionId);
+    ].subSection.findIndex((data) => data._id === subSectionId);
 
     if (currentSubSectionIndex !== noOfSubSections - 1) {
       //same section ki next video me jao
@@ -132,13 +132,13 @@ const VideoDetails = () => {
 
     const currentSubSectionIndex = courseSectionData[
       currentSectionIndex
-    ].subSectionId.findIndex((data) => data._id === subSectionId);
+    ].subSection.findIndex((data) => data._id === subSectionId);
 
     if (currentSubSectionIndex != 0) {
       //same section , prev video
       const prevSubSectionId =
         courseSectionData[currentSectionIndex].subSection[
-          currentSubSectionIndex - 1
+        currentSubSectionIndex - 1
         ];
       //iss video par chalge jao
       navigate(

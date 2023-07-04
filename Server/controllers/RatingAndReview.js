@@ -113,10 +113,11 @@ exports.getAverageRating = async (req, res) => {
 
 exports.getAllRating = async (req, res) => {
   try {
+    console.log("berfore fetching all reviews")
     const allReviews = await RatingAndReview.find({})
       .sort({ rating: "desc" })
       .populate({
-        path: "User",
+        path: "user",
         select: "firstName lastName email image",
       })
       .populate({
@@ -124,6 +125,9 @@ exports.getAllRating = async (req, res) => {
         select: "courseName",
       })
       .exec();
+
+
+    console.log("fetched all reviews : ", allReviews);
     return res.status(200).json({
       success: true,
       message: "All reviews fetched successfully",

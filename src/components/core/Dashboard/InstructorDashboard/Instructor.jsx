@@ -14,22 +14,24 @@ const Instructor = () => {
 
   useEffect(() => {
     const getCourseDataWithStats = async () => {
-      setLoading(true);
 
+      setLoading(true);
+      console.log("Instructor Token : ", token);
       const instructorApiData = await getInstructorData(token);
       const result = await fetchInstructorCourses(token);
 
       console.log(instructorApiData);
 
-      if (instructorApiData.length) setInstructorData(instructorApiData);
+      if (instructorApiData.length)
+        setInstructorData(instructorApiData);
 
       if (result) {
         setCourses(result);
       }
       setLoading(false);
-    };
+    }
     getCourseDataWithStats();
-  }, []);
+  }, [])
 
   const totalAmount = instructorData?.reduce(
     (acc, curr) => acc + curr.totalAmountGenerated,
@@ -37,7 +39,7 @@ const Instructor = () => {
   );
   const totalStudents = instructorData?.reduce(
     (acc, curr) => acc + curr.totalStudentsEnrolled,
-    0
+
   );
 
   return (
