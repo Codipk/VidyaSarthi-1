@@ -1,16 +1,15 @@
-const User = require('../models/User');
-const Profile = require('../models/Profile');
-const OTP = require('../models/OTP');
-const otpGenerator = require('otp-generator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const mailSender = require('../utils/mailSender');
-const { passwordUpdated } = require('../mail/templates/passwordUpdate');
-require('dotenv').config();
+const User = require("../models/User");
+const Profile = require("../models/Profile");
+const OTP = require("../models/OTP");
+const otpGenerator = require("otp-generator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const mailSender = require("../utils/mailSender");
+const { passwordUpdated } = require("../mail/templates/passwordUpdate");
+require("dotenv").config();
 
 //sendOTP for email Verification
 exports.sendotp = async (req, res) => {
-
   try {
     //fetch email from req body
     const { email } = req.body;
@@ -22,8 +21,8 @@ exports.sendotp = async (req, res) => {
     if (checkUserPresent) {
       return res.status(401).json({
         success: false,
-        message: 'User already Registered',
-      })
+        message: "User already Registered",
+      });
     }
 
     //create otp
@@ -42,19 +41,18 @@ exports.sendotp = async (req, res) => {
         specialChars: false,
       });
       result = await OTP.findOne({ otp: otp });
-    }//NOTE this is brute force we need any service that always generates the unique otp
-    //never use dbcall inside loop ,this is very bad code ...needed to be optimised 
+    } //NOTE this is brute force we need any service that always generates the unique otp
+    //never use dbcall inside loop ,this is very bad code ...needed to be optimised
     const otpPayload = { email, otp };
     //create an Entry in DB for OTP
     const otpBody = await OTP.create(otpPayload);
     console.log("OTP BODY : ", otpBody);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: 'OTP Sent  Successfully',
+      message: "OTP Sent  Successfully",
       otp,
-    })
-
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -78,60 +76,69 @@ exports.signup = async (req, res) => {
       confirmPassword,
       accountType,
       contactNumber,
-      otp
+      otp,
     } = req.body;
     //2. validate the data
-    if (!firstName || !lastName || !email || !password || !confirmPassword || !otp) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !otp
+    ) {
       return res.status(403).json({
         success: false,
-        message: 'All Fields are Required',
-      })
+        message: "All Fields are Required",
+      });
     }
-    //3.match password and confirmed password 
+    //3.match password and confirmed password
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Password and ConfirmedPassword Does not match',
-      })
+        message: "Password and ConfirmedPassword Does not match",
+      });
     }
     //4. check user already exit
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'User already Registered',
-      })
+        message: "User already Registered",
+      });
     }
     //5 . find most recent otp from the database
-    const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+    const recentOtp = await OTP.find({ email })
+      .sort({ createdAt: -1 })
+      .limit(1);
     //*****************HW -> find sort({ createdAt: -1 }).limit(1) ?****************************************************** */
     console.log("Recent OTP is : ", recentOtp);
 
     //6. validate the otpb
-    if (recentOtp.length == 0) {
+    if (recentOtp.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'OTP is not Found ',
+        message: "OTP is not Found ",
       });
-    }
-    else if (otp != recentOtp[0].otp) {
+    } else if (otp !== recentOtp[0].otp) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid OTPs',
+        message: "Invalid OTPs",
       });
     }
     //7. hash the password
     let hashedPassword;
     try {
       hashedPassword = await bcrypt.hash(password, 10);
-    }
-    catch (err) {
+    } catch (err) {
       return res.status(500).json({
         success: false,
-        message: 'Error inn hashing Password',
+        message: "Error inn hashing Password",
       });
     }
-
+    // Create the user
+    let approved = "";
+    approved === "Instructor" ? (approved = false) : (approved = true);
     //8. create entry in database
     //8.1 create profile
     const profileDetails = await Profile.create({
@@ -147,7 +154,8 @@ exports.signup = async (req, res) => {
       email,
       contactNumber,
       password: hashedPassword,
-      accountType,
+      accountType: accountType,
+      approved: approved,
       additionalDetails: profileDetails._id,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
@@ -155,20 +163,17 @@ exports.signup = async (req, res) => {
     //resturn response
     return res.status(200).json({
       success: true,
-      message: 'User is Registered Successfully',
+      message: "User is Registered Successfully",
       user,
-    })
-
+    });
   } catch (error) {
     console.log("Error in Registration : ", error);
     return res.status(500).json({
       success: false,
-      message: 'User Can not be Registered. Please try again ',
-
-    })
+      message: "User Can not be Registered. Please try again ",
+    });
   }
-}
-
+};
 
 //LogIn
 exports.login = async (req, res) => {
@@ -181,17 +186,17 @@ exports.login = async (req, res) => {
     if (!email || !password) {
       return res.status(403).json({
         success: false,
-        message: 'All fields are neccessary',
+        message: "All fields are neccessary",
       });
     }
 
     //3. check user if AlreadyExist
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("additionalDetails");
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not registered . Please SignUp firstly'
-      })
+        message: "User not registered . Please SignUp firstly",
+      });
     }
 
     //4. generate JWT tokens after password matching
@@ -200,7 +205,7 @@ exports.login = async (req, res) => {
         email: user.email,
         id: user._id,
         accountType: user.accountType,
-      }
+      };
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
@@ -210,32 +215,27 @@ exports.login = async (req, res) => {
       const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3days
         httpOnly: true,
-      }
+      };
       res.cookie("token", token, options).status(200).json({
         success: true,
         token,
         user,
-        message: 'Logged in Successfully',
+        message: "Logged in Successfully",
       });
-    }
-    else {
+    } else {
       return res.status(401).json({
         success: false,
-        message: 'Password Incorrect'
+        message: "Password Incorrect",
       });
     }
-
-
-
   } catch (error) {
     console.log("Error in LogIn : ", error);
     return res.status(500).json({
       success: false,
-      message: 'LogIn failure. Please Try Again',
-    })
+      message: "LogIn failure. Please Try Again",
+    });
   }
 };
-
 
 //changePassword
 
@@ -267,7 +267,7 @@ exports.changePassword = async (req, res) => {
         .json({ success: false, message: "The password is incorrect" });
     }
 
-    // Match new password and confirm new password
+    //Match new password and confirm new password
     if (newPassword !== confirmNewPassword) {
       // If new password and confirm new password do not match, return a 400 (Bad Request) error
       return res.status(400).json({
@@ -317,9 +317,4 @@ exports.changePassword = async (req, res) => {
       error: error.message,
     });
   }
-
-}
-
-
-
-
+};

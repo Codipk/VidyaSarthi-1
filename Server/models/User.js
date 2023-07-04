@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 //this file has been renamed from user.js
 const userSchema = new mongoose.Schema(
   {
@@ -38,13 +38,13 @@ const userSchema = new mongoose.Schema(
     additionalDetails: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Profile"
+      ref: "Profile",
     },
     courses: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Course",
-      }
+      },
     ],
     token: {
       type: String,
@@ -60,13 +60,11 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "courseProgress",
-      }
+      },
     ],
     // Add timestamps for when the document is created and last modified
   },
   { timestamps: true }
-
 );
-
 
 module.exports = mongoose.model("User", userSchema);
