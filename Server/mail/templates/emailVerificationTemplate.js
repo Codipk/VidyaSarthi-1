@@ -119,7 +119,7 @@ const otpTemplate = (otp) => {
     <div class="container">
       <div class="header">
      <div class="lt">
-            <a href="https://studynotion-edtech-project.vercel.app">
+            <a href="">
             <img class="logo" src="https://i.ibb.co/yS8tdPX/Logo-Light.png" alt="logoOnly"></a>
             <!--<h3 class="titlee"> -->
              <!--VidyaSarthi</h3> -->
@@ -140,23 +140,6 @@ const otpTemplate = (otp) => {
 		</div> 
       </div>
       <!--4444  -->
-
-
-      <!-- <div class="middle"> -->
-          <!-- <div class="card">
-          <div class="message">Verify Your Email Address</div>
-          <div class="line"></div>
-          <div class="body">
-				
-                <p>Verify your email to finish signing up with VidyaSarthi. Use the </br>following verification code:</p>
-				<h2 class="highlight">${otp}</h2>
-				<p>This OTP is valid for 5 minutes. If you did not request this verification, please disregard this email.</p>
-		  </div>
-        </div>
-        <div class="support">For any further queries or clarification, feel free to reach out to us by visiting <a
-					href="mailto:sundram.smn@gmail.com">vidya@sarthi.com</a>. We are here to help!</div>
-		</div>  -->
-      <!-- </div> -->
       </div>
     </div>
    

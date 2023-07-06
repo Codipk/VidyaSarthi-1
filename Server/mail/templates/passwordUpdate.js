@@ -94,7 +94,7 @@ exports.passwordUpdated = (email, name) => {
     <div class="container">
       <div class="header">
         <div class="lt">
-          <a href="https://studynotion-edtech-project.vercel.app"
+          <a href=""
             ><img
               class="logo"
               src="https://i.ibb.co/yS8tdPX/Logo-Light.png"

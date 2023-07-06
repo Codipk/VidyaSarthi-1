@@ -8,15 +8,15 @@ import {
 
 const RatingStars = ({ Review_Count, Star_Size }) => {
   const [starCount, SetStarCount] = useState({
-    full: 0,
-    half: 0,
-    empty: 0,
+    full: 1,
+    half: 1,
+    empty: 1,
   });
   useEffect(() => {
     const wholeStars = Math.floor(Review_Count) || 0;
     SetStarCount({
       full: wholeStars,
-      half: Number.isInteger(Review_Count) ? 0 : 1,
+      half: Number.isInteger(Review_Count) ? 1 : 2,
       empty: Number.isInteger(Review_Count) ? 5 - wholeStars : 4 - wholeStars,
     });
   }, [Review_Count]);

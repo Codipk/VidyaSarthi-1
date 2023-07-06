@@ -110,6 +110,8 @@ const CourseDetails = () => {
     courseContent,
     ratingAndReviews,
     instructor,
+    instructorFirstName,
+    instructorLastName,
     studentsEnrolled,
     createdAt,
   } = response.data?.courseDetails;
@@ -145,7 +147,7 @@ const CourseDetails = () => {
               </div>
               <div>
                 <p className="">
-                  Created By {`${instructor.firstName} ${instructor.lastName}`}
+                  Created By {`${instructorFirstName} ${instructorLastName}`}
                 </p>
               </div>
               <div className="flex flex-wrap gap-5 text-lg">
@@ -163,10 +165,15 @@ const CourseDetails = () => {
               <p className="space-x-3 pb-4 text-3xl font-semibold text-richblack-5">
                 Rs. {price}
               </p>
-              <button className="yellowButton" onClick={handleBuyCourse}>
+              <button
+                className="bg-yellow-50 mx-auto text-richblack-900  px-2 border-spacing-1  shadow-yellow-100 shadow-lg hover:rounded-lg  py-1 max-w-fit flex justify-center"
+                onClick={handleBuyCourse}
+              >
                 Buy Now
               </button>
-              <button className="blackButton">Add to Cart</button>
+              <button className="bg-richblue-800 mx-auto text-richblack-50 font semibold px-2 border-spacing-1  shadow-richblack-200 shadow-lg hover:rounded-lg  py-1 max-w-fit flex justify-center">
+                Add to Cart
+              </button>
             </div>
           </div>
           {/* Courses Card */}
@@ -232,14 +239,14 @@ const CourseDetails = () => {
               <div className="flex items-center gap-4 py-4">
                 <img
                   src={
-                    instructor.image
-                      ? instructor.image
-                      : `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.firstName} ${instructor.lastName}`
+                    instructor?.image
+                      ? instructor?.image
+                      : `https://api.dicebear.com/5.x/initials/svg?seed=${instructorFirstName} ${instructorLastName}`
                   }
                   alt="Author"
                   className="h-14 w-14 rounded-full object-cover"
                 />
-                <p className="text-lg">{`${instructor.firstName} ${instructor.lastName}`}</p>
+                <p className="text-lg">{`${instructorFirstName} ${instructorLastName}`}</p>
               </div>
               <p className="text-richblack-50">
                 {instructor?.additionalDetails?.about}

@@ -12,7 +12,7 @@ exports.createCourse = async (req, res) => {
   try {
     // Get user ID from request object
     const userId = req.user.id;
-
+    const userDetails = await User.findById(userId);
     // Get all required fields from request body
     let {
       courseName,
@@ -54,14 +54,17 @@ exports.createCourse = async (req, res) => {
     const instructorDetails = await User.findById(userId, {
       accountType: "Instructor",
     });
-
+    //console.log("instructor Details", instructorDetails);
     if (!instructorDetails) {
       return res.status(404).json({
         success: false,
         message: "Instructor Details Not Found",
       });
     }
-
+    const instructorName = {
+      firstName: userDetails.firstName,
+      lastName: userDetails.lastName,
+    }
     // Check if the tag given is valid
     const categoryDetails = await Category.findById(category);
     if (!categoryDetails) {
@@ -81,6 +84,8 @@ exports.createCourse = async (req, res) => {
       courseName,
       courseDescription,
       instructor: instructorDetails._id,
+      instructorFirstName: instructorName.firstName,
+      instructorLastName: instructorName.lastName,
       whatYouWillLearn: whatYouWillLearn,
       price,
       tag,
@@ -139,6 +144,7 @@ exports.getAllCourses = async (req, res) => {
         price: true,
         thumbnail: true,
         instructor: true,
+        instructorName: true,
         ratingAndReviews: true,
         studentsEnrolled: true,
       }

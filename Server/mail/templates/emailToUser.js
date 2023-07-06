@@ -71,7 +71,7 @@ const sendEmailToUser = (name) => {
     <body>
       <div class="container">
         <div class="header">
-          <a ref="https://studynotion-edtech-project.vercel.app"
+          <a ref=""
             ><img
               class="logo"
               src="https://i.ibb.co/yS8tdPX/Logo-Light.png"
@@ -99,6 +99,6 @@ const sendEmailToUser = (name) => {
         </div>
       </div>
     </body>
-  </html>`
-}
+  </html>`;
+};
 module.exports = sendEmailToUser;

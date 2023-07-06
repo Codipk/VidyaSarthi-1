@@ -48,13 +48,13 @@ const InstructorChart = ({ courses }) => {
   const options = {};
 
   return (
-    <div>
-      <p>Visualise</p>
-      <div className="flex gap-x-5">
+    <div className=" flex-1 rounded-md bg-richblack-800  px-24 py-4">
+      <p className="text-pink-100 font-extrabold text-2xl">Visualise</p>
+      <div className="flex flex-row gap-5 py-3 text-xl ">
         <button onClick={() => setCurrChart("students")}>Student</button>
         <button onClick={() => setCurrChart("income")}>Income</button>
       </div>
-      <div>
+      <div className=" flex-1 rounded-md bg-richblack-800 py-3 px-2">
         <Pie
           data={
             currChart === "students" ? chartDataForStudents : chartDataForIncome

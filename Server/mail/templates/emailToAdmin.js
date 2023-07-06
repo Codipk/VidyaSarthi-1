@@ -64,7 +64,7 @@ const sendEmailToAdmin = (userDetails) => {
     <body>
       <div class="container">
         <div class="header">
-          <a href="https://studynotion-edtech-project.vercel.app"
+          <a href=""
             ><img
               class="logo"
               src="https://i.ibb.co/yS8tdPX/Logo-Light.png"
