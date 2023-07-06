@@ -19,7 +19,7 @@ const CourseReviewModal = ({ setReviewModal }) => {
 
   useEffect(() => {
     setValue("courseExperience", "");
-    setValue("courseRating", 0);
+    setValue("courseRating", 5);
   }, []);
 
   const ratingChanged = (newRating) => {
@@ -39,55 +39,76 @@ const CourseReviewModal = ({ setReviewModal }) => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
+      <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
         {/* // header of moda */}
-        <div>
-          <p>Add Review</p>
-          <button onClick={() => setReviewModal(false)}>Close</button>
+        <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">
+          <p className="text-xl font-semibold text-richblack-5">Add Review</p>
+          <button
+            className="bg-yellow-50 text-richblack-900  p-2 border-spacing-1  shadow-yellow-100 shadow-lg hover:rounded-lg "
+            onClick={() => setReviewModal(false)}
+          >
+            Close
+          </button>
         </div>
         {/* // Modal body */}
-        <div>
-          <div>
+        <div className="p-6">
+          <div className="flex items-center justify-center gap-x-4">
             <img
               src={user?.image}
               alt="user Image"
-              className="aspect-square  w-[50px] rounded-full object-cover"
+              className="aspect-square w-[50px] rounded-full object-cover"
             />
             <div>
-              <p>
+              <p className="font-semibold text-richblack-5">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p>Posting Publicly</p>
+              <p className="text-sm text-richblack-5">Posting Publicly</p>
             </div>
           </div>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="mt-6 flex flex-col items-center"
+            className="mt-6 flex flex-col items-center  "
           >
             <ReactStars
               count={5}
+              id="courseRating"
               onChange={ratingChanged}
               size={24}
               activeColor="#ffd700"
+              {...register("courseRating", { required: true })}
             />
 
-            <div>
-              <label htmlFor="courseExperience">Add Your Experience*</label>
+            <div className="flex w-11/12 flex-col space-y-2">
+              <label
+                htmlFor="courseExperience"
+                className="text-sm text-richblack-5"
+              >
+                Add Your Experience
+                <sup className="text-pink-200">*</sup>
+              </label>
               <textarea
                 id="courseExperience"
                 placeholder="Add Your Experience here"
                 {...register("courseExperience", { required: true })}
-                className="form-style min-h-[130px] w-full"
+                className="form-style resize-x-none min-h-[130px] w-full"
               />
               {errors.courseExperience && (
                 <span>Please add your experience</span>
               )}
             </div>
             {/* Cancel and Save button */}
-            <div>
-              <button onClick={() => setReviewModal(false)}>Cancel</button>
+            <div className="mt-6 flex w-11/12 justify-end gap-x-2 ">
+              {/* <button
+                className="bg-yellow-50 text-richblack-900 px-2 border-spacing-1
+              shadow-yellow-100 shadow-lg hover:rounded-lg "
+                onClick={() => setReviewModal(false)}
+              >
+                Cancel
+              </button> */}
+              <IconBtn onclick={() => setReviewModal(false)} text="Cancel" />
+
               <IconBtn text="save" />
             </div>
           </form>

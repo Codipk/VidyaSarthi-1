@@ -23,7 +23,7 @@ const ViewCourse = () => {
       const courseData = await getFullDetailsOfCourse(courseId, token);
       dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
       dispatch(setEntireCourseData(courseData.courseDetails));
-      dispatch(setCompletedLectures(courseData.completeVideos));
+      dispatch(setCompletedLectures(courseData.completedVideos));
 
       let lectures = 0;
       courseData?.courseDetails?.courseContent?.forEach((element) => {
@@ -37,9 +37,9 @@ const ViewCourse = () => {
 
   return (
     <>
-      <div>
+      <div className="relative flex min-h-[calc(100vh-3.5rem)]">
         <VideoDetailsSidebar setReviewModal={setReviewModal} />
-        <div>
+        <div className=" mr-1">
           <Outlet />
         </div>
       </div>

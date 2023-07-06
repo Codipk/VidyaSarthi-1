@@ -9,6 +9,14 @@ const coursesSchema = new mongoose.Schema({
     required: true,
     ref: "User",
   },
+  instructorFirstName: {
+    type: String,
+    required: true,
+  },
+  instructorLastName: {
+    type: String,
+    required: true,
+  },
   whatYouWillLearn: {
     type: String,
   },

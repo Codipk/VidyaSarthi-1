@@ -1,8 +1,9 @@
 import { FiTrash2 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import { deleteProfile } from "../../../../services/operations/SettingsAPI";
+import { useState } from "react";
 
 export default function DeleteAccount() {
   const { token } = useSelector((state) => state.auth);
@@ -16,6 +17,7 @@ export default function DeleteAccount() {
       console.log("ERROR MESSAGE - ", error.message);
     }
   }
+  const [confirmationModal, setConfirmationModal] = useState(false);
 
   return (
     <>
@@ -34,15 +36,33 @@ export default function DeleteAccount() {
               permanent and will remove all the contain associated with it.
             </p>
           </div>
-          <button
+          {/* <button
             type="button"
             className="w-fit cursor-pointer italic text-pink-300"
             onClick={handleDeleteAccount}
           >
             I want to delete my account.
+          </button> */}
+          <button
+            onClick={() =>
+              setConfirmationModal({
+                text1: "Are you sure you want to delete your account?",
+                text2: "You will not be able to login again.",
+                btn1Text: "Delete",
+                btn2Text: "Cancel",
+                btn1Handler: () => dispatch(handleDeleteAccount),
+                btn2Handler: () => setConfirmationModal(null),
+              })
+            }
+            className="w-fit cursor-pointer italic text-pink-300"
+          >
+            <div className="flex items-center gap-x-2">
+              <span>I want to delete my account.</span>
+            </div>
           </button>
         </div>
       </div>
+      {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
   );
 }

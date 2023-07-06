@@ -82,8 +82,8 @@ const Home = () => {
               active: false,
             }}
             codeblock={`<!DOCTYPE html>\n<html>\nhead><title>Example</\ntitle><linkrel="stylesheet"href="styles.css">\n/head>\nbody>\nh1><ahref="/">Header</a>\n/h1>\nnav><ahref="one/">One</a><ahref="two/">Two</\na><ahref="three/">Three</a>\n/nav>\n`}
-            codeColor={"text-yellow-25"}
-            backgroundGradient={"rgba(16, 29, 97, 1) 0%"}
+            codeColor={"text-yellow-100"}
+            backgroundGradient={"brown-900"}
           />
         </div>
 
@@ -111,7 +111,8 @@ const Home = () => {
               active: false,
             }}
             codeblock={`<!DOCTYPE html>\n<html>\nhead><title>Example</\ntitle><linkrel="stylesheet"href="styles.css">\n/head>\nbody>\nh1><ahref="/">Header</a>\n/h1>\nnav><ahref="one/">One</a><ahref="two/">Two</\na><ahref="three/">Three</a>\n/nav>\n`}
-            codeColor={"text-yellow-25"}
+            codeColor={"richblue-200"}
+            backgroundGradient={" border-brown-300"}
           />
         </div>
         <ExploreMore />
@@ -163,7 +164,7 @@ const Home = () => {
         <InstructorSection />
 
         <h2 className="text-center text-4xl font-semobold mt-10">
-          review from Other Learners
+          Review From Other <HighLightText text={"Learners"} />
         </h2>
         {/* Review Slider here */}
         <ReviewSlider />

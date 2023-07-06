@@ -30,10 +30,13 @@ const CodeBlocks = ({
       </div>
       {/* section 2 */}
       <div
-        className={`h-fit flex flex-row text-[10px] w-[100%] py-4 lg:w-[500px] 
-        linear-gradient(111.93deg, -1.4%,${backgroundGradient}, rgba(17, 30, 50, 0.38) 104.96%) backdrop-filter: blur(26px)}`}
+        //         className={`h-fit flex flex-row text-[10px] w-[100%] font-bold py-4 lg:w-[500px] shadow-2xl
+        //  bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-richblue-200 via-richblack-600 to-pink-100}`}
+        //       >
+        className={`h-fit code-border flex flex-row py-3 text-[10px] sm:text-sm leading-[18px] sm:leading-6 relative w-[100%] lg:w-[470px]
+     bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-richblue-500 via-richblack-500 to-${backgroundGradient}`}
       >
-        <div className="text-center flex flex-col w-[10%] text-richblack-400 font-inter font-bold ">
+        <div className="text-center flex flex-col   w-[10%] select-none text-richblack-400 font-inter font-bold ">
           <p>1</p>
           <p>2</p>
           <p>3</p>

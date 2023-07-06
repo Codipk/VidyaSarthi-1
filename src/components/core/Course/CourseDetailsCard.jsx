@@ -44,7 +44,7 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
 
   return (
     <div
-      className={`flex flex-col gap-4 rounded-md bg-richblack-700 p-4 text-richblack-5`}
+      className={` flex flex-col gap-4 py-2 rounded-md bg-richblack-700 p-4 text-richblack-5`}
     >
       <img
         src={ThumbnailImage}
@@ -55,9 +55,10 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
         <div className="space-x-3 pb-4 text-3xl font-semibold">
           Rs. {CurrentPrice}
         </div>
-        <div className="flex flex-row  gap-x-8">
+        <div className="flex flex-row  gap-x-8  ">
           <button
-            className="bg-yellow-50 w-fit text-richblack-900  px-2 border-spacing-1  shadow-yellow-100 shadow-lg hover:rounded-lg  py-1  "
+            className="bg-yellow-50 text-richblack-900  px-2 border-spacing-1  shadow-yellow-100 shadow-lg hover:rounded-lg  py-1   "
+            // className="yellowButton"
             onClick={
               user && course?.studentsEnrolled.includes(user?._id)
                 ? () => navigate("/dashboard/enrolled-courses")
@@ -72,18 +73,15 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
           {(!user || !course?.studentsEnrolled.includes(user?._id)) && (
             <button
               onClick={handleAddToCart}
-              className="bg-yellow-50 w-fit text-richblack-900  px-2 border-spacing-1  shadow-yellow-100 shadow-lg hover:rounded-lg  py-1"
+              className="bg-richblue-800 mx-auto text-richblack-50 font semibold px-2 border-spacing-1  shadow-richblack-200 shadow-lg hover:rounded-lg  py-1 "
             >
               Add to Cart
             </button>
           )}
         </div>
 
-        <div>
-          <p className="pb-3 pt-6 text-center text-sm text-richblack-25">
-            30-Day Money-Back Guarantee
-          </p>
-          <p>This Course Includes:</p>
+        <div className={``}>
+          <p className={`my-2 text-xl font-semibold `}>This Course Includes:</p>
           <div className="flex flex-col gap-3 text-sm text-caribbeangreen-100">
             {course?.instructions?.map((item, index) => {
               return (
